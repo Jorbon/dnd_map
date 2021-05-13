@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<title>D&D</title>
+	<link rel="icon" href="icon.png">
+	<input id="image-input" type="file" accept="image/*" multiple>
+	<input id="dndmap-input" type="file" accept="text/plain" multiple>
+	<script src="scripts/lib/math.js"></script>
+	<script src="scripts/lib/V.js"></script>
+	<script src="scripts/lib/Mouse.js"></script>
+	<script src="scripts/lib/LocalSpace.js"></script>
+	<script src="scripts/TTMap.js"></script>
+	<script src="scripts/TTMapRegion.js"></script>
+	<script defer src="scripts/main.js"></script>
+	<style type="text/css">
+		body {
+			margin: 0;
+			overflow: hidden;
+			user-select: none;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+		}
+		canvas {
+			position: absolute;
+		}
+		*:focus {
+			outline: none;
+		}
+		input {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+</body>
+</html>
