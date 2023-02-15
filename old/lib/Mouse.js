@@ -22,7 +22,7 @@ class Mouse extends V {
 		element.addEventListener("mousemove", e => { if (this.enabled) this.onMove(e.x, e.y) });
 		element.addEventListener("mousedown", e => { if (this.enabled) this.onDown(e.button, e.x, e.y) });
 		element.addEventListener("mouseup", e => { if (this.enabled) this.onUp(e.button, e.x, e.y) });
-		setParent(element);
+		this.setParent(element);
 	}
 	onMove(x, y) {
 		this.d.x = x - this.parent.offsetLeft - this.x;
