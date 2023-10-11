@@ -7,6 +7,15 @@ let dragging = false
 let dragOrigin = new Vec2()
 
 
+const movementTable = {
+	"ArrowLeft": new Vec2(-5, 0),
+	"ArrowRight": new Vec2(5, 0),
+	"ArrowUp": new Vec2(0, -5),
+	"ArrowDown": new Vec2(0, 5)
+}
+
+
+
 // Mouse activity
 
 window.addEventListener("mousedown", event => {
@@ -38,7 +47,8 @@ window.addEventListener("mouseup", event => {
 				let selectedFog = false
 				for (let i = fogs.length - 1; i >= 0; i--) {
 					if (fogs[i].isUnderPoint(mouse)) {
-						fogs[i].selected = true
+						if (event.altKey) fogs[i].selected = !fogs[i].selected
+						else fogs[i].selected = true
 						selectedFog = true
 						break
 					}
@@ -50,7 +60,8 @@ window.addEventListener("mouseup", event => {
 						 && images[i].y <= mouse.y
 						 && images[i].x + images[i].width >= mouse.x
 						 && images[i].y + images[i].height >= mouse.y) {
-							images[i].selected = true
+							if (event.altKey) images[i].selected = !images[i].selected
+							else images[i].selected = true
 							break
 						}
 					}
@@ -175,6 +186,8 @@ const keys = {}
 function isKeyPressed(key) { return !!keys[key] }
 
 
+
+
 // Key presses
 
 window.addEventListener("keydown", event => {
@@ -209,6 +222,26 @@ window.addEventListener("keydown", event => {
 		case "g":
 			event.preventDefault()
 		break
+		case "ArrowUp": // move forwards
+			if (event.shiftKey) {
+				// move to front
+				moveToFront(images, image => image.selected)
+				moveToFront(fogs, fog => fog.selected)
+			} else {
+				moveForwards(images, image => image.selected)
+				moveForwards(fogs, fog => fog.selected)
+			}
+		break
+		case "ArrowDown": // move back
+			if (event.shiftKey) {
+				// move to back
+				moveToBack(images, image => image.selected)
+				moveToBack(fogs, fog => fog.selected)
+			} else {
+				moveBackwards(images, image => image.selected)
+				moveBackwards(fogs, fog => fog.selected)
+			}
+		break
 	}
 	
 	else switch (event.key) {
@@ -224,6 +257,46 @@ window.addEventListener("keydown", event => {
 		case "r": // reset all fogs to active
 			for (let fog of fogs) fog.active = true
 		break
+		case "Delete": // delete stuff
+		case "Backspace":
+			for (let i = 0; i < images.length; i++) {
+				if (images[i].selected) {
+					images.splice(i, 1)
+					i--
+				}
+			}
+			for (let i = 0; i < fogs.length; i++) {
+				if (fogs[i].selected) {
+					fogs.splice(i, 1)
+					i--
+				}
+			}
+		break
+		
+		// move selected elements
+		case "ArrowLeft":
+		case "ArrowRight":
+		case "ArrowUp":
+		case "ArrowDown":
+			let movement = movementTable[event.key]
+			for (let image of images) {
+				if (!image.selected) continue
+				image.x += movement.x
+				image.y += movement.y
+			}
+			for (let fog of fogs) {
+				if (!fog.selected) continue
+				if (fog instanceof FogRect) {
+					fog.left += movement.x
+					fog.right += movement.x
+					fog.top += movement.y
+					fog.bottom += movement.y
+				} else {
+					for (let i = 0; i < fog.path.length; i++) fog.path[i] = fog.path[i].plus(movement)
+				}
+			}
+		break
+		
 		case " ":
 			event.preventDefault()
 			for (let i = fogs.length - 1; i >= 0; i--) {

@@ -42,6 +42,51 @@ function updateViewValues() {
 	mouse.y = mouseCanvasY * canvasToGrid + view.y
 }
 
+function moveForwards(list, selectfn) {
+	let temp
+	for (let i = 0; i < list.length - 1; i++) {
+		if (selectfn(list[i]) && !selectfn(list[i+1])) {
+			temp = list[i]
+			list[i] = list[i+1]
+			list[i+1] = temp
+			i++
+		}
+	}
+}
+
+function moveBackwards(list, selectfn) {
+	let temp
+	for (let i = 0; i < list.length - 1; i++) {
+		if (!selectfn(list[i]) && selectfn(list[i+1])) {
+			temp = list[i]
+			list[i] = list[i+1]
+			list[i+1] = temp
+			i++
+		}
+	}
+}
+
+function moveToFront(list, selectfn) {
+	let temp = []
+	for (let i = 0; i < list.length; i++) {
+		if (selectfn(list[i])) {
+			temp.push(list.splice(i, 1)[0])
+			i--
+		}
+	}
+	temp.forEach(item => list.push(item))
+}
+
+function moveToBack(list, selectfn) {
+	let temp = []
+	for (let i = list.length - 1; i >= 0; i--) {
+		if (selectfn(list[i])) {
+			temp.push(list.splice(i, 1)[0])
+		}
+	}
+	temp.forEach(item => list.unshift(item))
+}
+
 function drawGrid() {
 	ctx.strokeStyle = "#afafaf7f"
 	ctx.lineWidth = 1
